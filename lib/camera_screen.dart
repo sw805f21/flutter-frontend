@@ -13,6 +13,16 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:multipart_request/multipart_request.dart';
 
+/// Flutter code sample for FloatingActionButton
+
+// This example shows how to make an extended [FloatingActionButton] in a
+// [Scaffold], with a  pink [backgroundColor], a thumbs up [Icon] and a
+// [Text] label that reads "Approve".
+//
+// ![](https://flutter.github.io/assets-for-api-docs/assets/material/floating_action_button_label.png)
+
+import 'package:flutter/material.dart';
+
 class CameraScreen extends StatefulWidget {
   const CameraScreen({Key key}) : super(key: key);
 
@@ -104,6 +114,14 @@ class CameraScreenState extends State<CameraScreen>
             )
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Add your onPressed code here!
+          _displayTextInputDialog(context);
+        },
+        label: const Text('Textbox'),
+        backgroundColor: Colors.blue,
+      ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
@@ -182,9 +200,9 @@ class CameraScreenState extends State<CameraScreen>
                     stopVideoRecording();
                     var file = File(latest);
                     var url = "https://sembrik.pythonanywhere.com/upload";
-                    sleep(Duration(seconds:5));
+                    sleep(Duration(seconds:3));
                     _asyncFileUpload();
-                    Upload();
+                    //Upload(); / To test connection to the server
 
                   } else {
                     startVideoRecording();
@@ -347,7 +365,67 @@ class CameraScreenState extends State<CameraScreen>
     var responseData = await response.stream.toBytes();
     var responseString = String.fromCharCodes(responseData);
     print(responseString);
+    _showReply(responseString);
     print('Response UPLOAD: ${response.statusCode}');
+  }
+
+  Future<void> _showReply(String inference) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Translated Sentence to English"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(inference)
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Thanks'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Text Area Communication'),
+            content: TextField(
+              maxLines: null,
+              onChanged: (value) {
+                setState(() {
+                  var valueText = value;
+                });
+              },
+              decoration: InputDecoration(hintText: "Text Field in Dialog"),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                color: Colors.green,
+                textColor: Colors.white,
+                child: Text('OK'),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+
+            ],
+          );
+        });
   }
 
   Future<String> uploadImageHTTP(file, url) async {
