@@ -6,5 +6,5 @@ Flutter frontend is the new front end for the SW8 project. The mobile applicatio
  - [x] Record Videos
  - [x] Send video to backend
  - [ ] Process Inference Reply
- - [ ] Notebook feature
+ - [x] Notebook feature
  - [ ] TTS feature
